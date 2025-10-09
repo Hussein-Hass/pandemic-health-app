@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+header {
+    background: #007bff;
+    color: #fff;
+    padding: 10px;
+}
+
+nav a {
+    margin: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+section {
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+img {
+    max-width: 100%;  /* Ensures the image scales properly */
+    height: auto;     /* Maintains the aspect ratio */
+    display: block;
+    margin: 20px auto; /* Centers the image */
+    width: 60%; /* Adjust percentage to resize */
+}
+/* Default styles apply to all screens */
+
+/* 📱 Mobile Screens (less than 768px wide) */
+@media screen and (max-width: 768px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .container {
+        width: 95%;
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 22px;
+    }
+
+    nav ul {
+        flex-direction: column; /* Stack menu items */
+        text-align: center;
+    }
+
+    .button {
+        width: 100%; /* Make buttons full width */
+    }
+}
+
+/* 🖥️ Tablet Screens (768px - 1024px) */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+    body {
+        font-size: 16px;
+    }
+
+    .container {
+        width: 85%;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+}

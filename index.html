@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pandemic Detection System</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a class="brand" href="index.html" aria-label="Pandemic Detection Home">Pandemic Detection</a>
+
+            <button class="nav-toggle" id="navToggle" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                ☰
+            </button>
+
+            <nav id="mainNav" class="main-nav" role="navigation" aria-label="Main menu">
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="dashboard.html">Dashboard</a></li>
+                    <li><a href="ai_detection.html">AI Detection</a></li>
+                    <li><a href="subscription.html">Subscription</a></li>
+                    <li><a href="admin.html">Admin Panel</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="hero-wrap" role="main">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Early Detection, Early Protection</h1>
+                <p class="lead">Using AI and machine learning to detect pandemic outbreaks before they spread. Fast, privacy-first, clinically-minded.</p>
+                <div class="hero-ctas">
+                    <a href="ai_detection.html" class="cta-button primary">Try AI Detection</a>
+                    <a href="subscription.html" class="cta-button ghost">Get Started</a>
+                </div>
+            </div>
+            <div class="hero-media" aria-hidden="true">
+                <img src="images/healthcare.jpg" alt="Healthcare AI illustration">
+            </div>
+        </section>
+
+        <section class="features" aria-labelledby="features-title">
+            <h2 id="features-title">Why Choose Our System?</h2>
+            <div class="feature-grid">
+                <article class="feature-box">
+                    <h3>AI-Powered Detection</h3>
+                    <p>Advanced models flag concerning symptom patterns early, helping teams act fast.</p>
+                </article>
+                <article class="feature-box">
+                    <h3>Real-Time Monitoring</h3>
+                    <p>Live dashboards and alerts keep you informed about evolving risk areas.</p>
+                </article>
+                <article class="feature-box">
+                    <h3>User Alerts</h3>
+                    <p>Receive privacy-preserving notifications if exposure risk is detected.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer" role="contentinfo">
+        <p>&copy; <span id="year"></span> Pandemic Detection System | Protecting Lives with Technology</p>
+    </footer>
+
+    <script>
+    // small behavior: mobile nav toggle + year
+    (function () {
+        const nav = document.getElementById('mainNav');
+        const btn = document.getElementById('navToggle');
+        btn && btn.addEventListener('click', () => {
+            const open = nav.classList.toggle('open');
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        const y = new Date().getFullYear();
+        document.getElementById('year').textContent = y;
+    })();
+    </script>
+</body>
+</html>

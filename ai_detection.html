@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Detection - Pandemic System</title>
+    <link rel="stylesheet" href="css/ai_detection.css">
+</head>
+<body>
+    <header>
+        <h1>AI-Powered Pandemic Detection</h1>
+    </header>
+
+    <main class="ai-detection-container" role="main">
+        <section class="detection-form card" aria-labelledby="det-title" role="region">
+            <h2 id="det-title">Enter Symptoms for AI Analysis</h2>
+            <form id="aiDetectionForm" role="form" autocomplete="on" novalidate>
+                <label for="symptoms">Symptoms</label>
+                <input name="symptoms" type="text" id="symptoms" placeholder="e.g., fever, cough, fatigue" required autocomplete="off">
+
+                <label for="location">Location</label>
+                <input name="location" type="text" id="location" placeholder="City, Country" required autocomplete="address-level2">
+
+                <div class="controls">
+                    <button type="submit" class="btn primary">Analyze</button>
+                    <button type="button" id="aiReset" class="btn ghost">Reset</button>
+                </div>
+            </form>
+        </section>
+
+        <div id="loading" class="hidden" aria-hidden="true" aria-live="polite">
+            <p>🔍 AI is analyzing symptoms... Please wait.</p>
+        </div>
+
+        <section class="detection-results hidden card" id="result-section" aria-labelledby="results-title" role="region" tabindex="-1">
+            <h2 id="results-title">Analysis Results</h2>
+            <p id="analysis-output" role="status" aria-live="polite">Enter symptoms to receive AI analysis.</p>
+            <div id="risk-level" class="risk-box hidden" aria-hidden="true"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Pandemic Detection System | AI-Enhanced Health Monitoring</p>
+    </footer>
+
+    <noscript>
+        <div class="card" style="margin:12px; padding:12px; background:#fff; border-radius:8px;">
+            <strong>Note:</strong> JavaScript is required to perform the client-side analysis demo.
+        </div>
+    </noscript>
+
+    <script src="js/ai_detection.js"></script>
+</body>
+</html>
