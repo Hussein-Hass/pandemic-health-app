@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign Up | Pandemic Health</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <h1>Create Your Account</h1>
+      <p class="lead">Join Pandemic Health to access personalized AI detection and health monitoring.</p>
+
+      <form id="signupForm" autocomplete="on" novalidate>
+        <label for="name">Full Name</label>
+        <input id="name" name="name" type="text" placeholder="e.g., Hassan Abdulsalam" required />
+
+        <div class="row">
+          <div class="half">
+            <label for="age">Age</label>
+            <input id="age" name="age" type="number" min="1" placeholder="e.g., 22" required />
+          </div>
+          <div class="half">
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender" required>
+              <option value="">Select...</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" required />
+
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input id="password" name="password" type="password" placeholder="Choose a secure password" required />
+          <button type="button" class="toggle-eye" id="togglePassword" aria-label="Show password">👁️</button>
+        </div>
+
+        <button class="btn primary" id="signupBtn" type="submit">Create Account</button>
+
+        <p class="small">Already have an account? <a href="login.html">Log in</a></p>
+        <p id="formMessage" class="small error" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+  <div id="successPopup" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3>✅ Account Created</h3>
+      <p>You will be redirected to login shortly.</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyBHTTbLJbKUbvIj7amzeCmsRMKT5UtaknE",
+  authDomain: "pandemic-health.firebaseapp.com",
+  projectId: "pandemic-health",
+  storageBucket: "pandemic-health.firebasestorage.app",
+  messagingSenderId: "80746170325",
+  appId: "1:80746170325:web:2ec82c7c1711a38be85f5c"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const form = document.getElementById('signupForm');
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const popup = document.getElementById('successPopup');
+    const formMessage = document.getElementById('formMessage');
+
+    toggleBtn.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      toggleBtn.textContent = type === 'password' ? '👁️' : '🙈';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      formMessage.textContent = '';
+
+      const name = document.getElementById('name').value.trim();
+      const age = document.getElementById('age').value.trim();
+      const gender = document.getElementById('gender').value;
+      const email = document.getElementById('email').value.trim();
+      const password = passwordInput.value;
+
+      if (!name || !age || !gender || !email || !password) {
+        formMessage.textContent = 'Please fill all fields.';
+        return;
+      }
+
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await setDoc(doc(db, 'users', user.uid), {
+          name,
+          age: Number(age),
+          gender,
+          email,
+          createdAt: new Date().toISOString()
+        });
+
+        popup.classList.remove('hidden');
+        setTimeout(() => {
+          popup.classList.add('hidden');
+          window.location.href = 'login.html';
+        }, 2500);
+      } catch (err) {
+        let msg = err.message || String(err);
+        if (err.code === 'auth/email-already-in-use') msg = 'This email is already in use.';
+        if (err.code === 'auth/invalid-email') msg = 'Enter a valid email address.';
+        if (err.code === 'auth/weak-password') msg = 'Password is too weak (min 6 chars).';
+        formMessage.textContent = msg;
+      }
+    });
+  </script>
+</body>
+</html>

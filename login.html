@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Log In | Pandemic Health</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <h1>Welcome Back</h1>
+      <p class="lead">Log in to access your personalized dashboard and AI detection tools.</p>
+
+      <form id="loginForm" autocomplete="on" novalidate>
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" required />
+
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input id="password" name="password" type="password" placeholder="Enter your password" required />
+          <button type="button" class="toggle-eye" id="togglePassword" aria-label="Show password">👁️</button>
+        </div>
+
+        <button class="btn primary" id="loginBtn" type="submit">Log In</button>
+
+        <p class="small">Don't have an account? <a href="signup.html">Sign up</a></p>
+        <p id="formMessage" class="small error" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBHTTbLJbKUbvIj7amzeCmsRMKT5UtaknE",
+    authDomain: "pandemic-health.firebaseapp.com",
+    projectId: "pandemic-health",
+    storageBucket: "pandemic-health.appspot.com",
+    messagingSenderId: "80746170325",
+    appId: "1:80746170325:web:2ec82c7c1711a38be85f5c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const form = document.getElementById('loginForm');
+  const toggleBtn = document.getElementById('togglePassword');
+  const passwordInput = document.getElementById('password');
+  const formMessage = document.getElementById('formMessage');
+
+  toggleBtn.addEventListener('click', () => {
+    const type = passwordInput.type === 'password' ? 'text' : 'password';
+    passwordInput.type = type;
+    toggleBtn.textContent = type === 'password' ? '👁️' : '🙈';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    formMessage.textContent = '';
+
+    const email = document.getElementById('email').value.trim();
+    const password = passwordInput.value;
+
+    if (!email || !password) {
+      formMessage.textContent = 'Please fill in both fields.';
+      return;
+    }
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Fetch user role from Firestore
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (userData.role === 'admin') {
+          window.location.href = 'admin.html';
+        } else {
+          window.location.href = 'index.html';
+        }
+      } else {
+        formMessage.textContent = 'User data not found.';
+      }
+    } catch (err) {
+      let msg = err.message || String(err);
+      if (err.code === 'auth/user-not-found') msg = 'No account found with this email.';
+      if (err.code === 'auth/wrong-password') msg = 'Incorrect password.';
+      if (err.code === 'auth/invalid-email') msg = 'Enter a valid email address.';
+      formMessage.textContent = msg;
+    }
+  });
+</script>
+</body>
+</html>

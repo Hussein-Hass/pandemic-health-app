@@ -1,76 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Pandemic Detection</title>
-    <link rel="stylesheet" href="css/admin.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Dashboard | Pandemic Health</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
-    <div class="admin-container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2>Admin Menu</h2>
-            </div>
-            <nav class="sidebar-nav">
-                <ul>
-                    <li><a href="#dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="#users"><i class="fas fa-users"></i> User Management</a></li>
-                    <li><a href="#settings"><i class="fas fa-cog"></i> Settings</a></li>
-                    <li><a href="#logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                </ul>
-            </nav>
-        </aside>
-        <main class="main-content">
-            <header class="main-header">
-                <h1>Welcome, Admin</h1>
-            </header>
-            <section id="dashboard" class="content-section">
-                <h2>Dashboard</h2>
-                <div class="dashboard-cards">
-                    <div class="card">
-                        <h3>Total Users</h3>
-                        <p id="total-users">0</p>
-                    </div>
-                    <div class="card">
-                        <h3>Active Subscriptions</h3>
-                        <p id="active-subscriptions">0</p>
-                    </div>
-                    <div class="card">
-                        <h3>System Status</h3>
-                        <p id="system-status" class="status-ok">Operational</p>
-                    </div>
-                </div>
-                <div class="data-table-container">
-                    <h3>Recent Subscriptions</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Plan</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="userTable">
-                            <!-- User data will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            <section id="users" class="content-section" style="display: none;">
-                <h2>User Management</h2>
-                <p>Here you can manage users.</p>
-                <!-- User management content will go here -->
-            </section>
-            <section id="settings" class="content-section" style="display: none;">
-                <h2>Settings</h2>
-                <p>Here you can configure system settings.</p>
-                <!-- Settings content will go here -->
-            </section>
-        </main>
-    </div>
-    <script src="js/admin.js"></script>
+  <div class="admin-container">
+    <aside class="sidebar">
+      <h2>Admin Dashboard</h2>
+      <nav>
+        <ul>
+          <li><a href="#aiResults">AI Detection Results</a></li>
+          <li><a href="#manageUsers">Manage Users</a></li>
+          <li><a href="#resetPassword">Reset Password</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <section id="aiResults">
+        <h3>AI Detection Results</h3>
+        <table id="aiResultsTable">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Symptoms</th>
+              <th>Location</th>
+              <th>Risk Level</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- AI detection results will be dynamically added here -->
+          </tbody>
+        </table>
+      </section>
+
+      <section id="manageUsers">
+        <h3>Manage Users</h3>
+        <table id="usersTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- User data will be dynamically added here -->
+          </tbody>
+        </table>
+      </section>
+
+      <section id="resetPassword">
+        <h3>Reset Password</h3>
+        <form id="resetPasswordForm">
+          <label for="resetEmail">User Email</label>
+          <input id="resetEmail" type="email" placeholder="Enter user email" required />
+          <button class="btn primary" type="submit">Send Reset Link</button>
+          <p id="resetMessage" class="small error" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBHTTbLJbKUbvIj7amzeCmsRMKT5UtaknE",
+      authDomain: "pandemic-health.firebaseapp.com",
+      projectId: "pandemic-health",
+      storageBucket: "pandemic-health.appspot.com",
+      messagingSenderId: "80746170325",
+      appId: "1:80746170325:web:2ec82c7c1711a38be85f5c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Fetch AI Detection Results
+    async function fetchAIDetectionResults() {
+      const resultsTable = document.getElementById('aiResultsTable').querySelector('tbody');
+      resultsTable.innerHTML = ''; // Clear table
+
+      const resultsSnapshot = await getDocs(collection(db, 'ai_results'));
+      resultsSnapshot.forEach((doc) => {
+        const data = doc.data();
+        const row = `
+          <tr>
+            <td>${data.userName}</td>
+            <td>${data.symptoms}</td>
+            <td>${data.location}</td>
+            <td>${data.riskLevel}</td>
+            <td>${new Date(data.timestamp).toLocaleString()}</td>
+          </tr>
+        `;
+        resultsTable.innerHTML += row;
+      });
+    }
+
+    // Fetch Users
+    async function fetchUsers() {
+      const usersTable = document.getElementById('usersTable').querySelector('tbody');
+      usersTable.innerHTML = ''; // Clear table
+
+      const usersSnapshot = await getDocs(collection(db, 'users'));
+      usersSnapshot.forEach((doc) => {
+        const data = doc.data();
+        const row = `
+          <tr>
+            <td>${data.name}</td>
+            <td>${data.email}</td>
+            <td>${data.role || 'user'}</td>
+            <td>
+              <button class="btn small">Edit</button>
+              <button class="btn small danger">Delete</button>
+            </td>
+          </tr>
+        `;
+        usersTable.innerHTML += row;
+      });
+    }
+
+    // Reset Password
+    const resetForm = document.getElementById('resetPasswordForm');
+    resetForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('resetEmail').value.trim();
+      const resetMessage = document.getElementById('resetMessage');
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+        resetMessage.textContent = 'Password reset link sent!';
+        resetMessage.style.color = '#4caf50';
+      } catch (err) {
+        resetMessage.textContent = 'Error sending reset link.';
+      }
+    });
+
+    // Initialize
+    fetchAIDetectionResults();
+    fetchUsers();
+  </script>
 </body>
 </html>

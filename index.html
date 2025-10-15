@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Pandemic Detection System</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -32,7 +32,8 @@
     <main class="hero-wrap" role="main">
         <section class="hero">
             <div class="hero-content">
-                <h1>Early Detection, Early Protection</h1>
+                <!-- Welcome message dynamically added here -->
+                <h1 id="welcomeMessage">Welcome!</h1>
                 <p class="lead">Using AI and machine learning to detect pandemic outbreaks before they spread. Fast, privacy-first, clinically-minded.</p>
                 <div class="hero-ctas">
                     <a href="ai_detection.html" class="cta-button primary">Try AI Detection</a>
@@ -65,20 +66,58 @@
 
     <footer class="site-footer" role="contentinfo">
         <p>&copy; <span id="year"></span> Pandemic Detection System | Protecting Lives with Technology</p>
+        <button id="logoutBtn" class="btn ghost logout-btn">Logout</button>
     </footer>
 
-    <script>
-    // small behavior: mobile nav toggle + year
-    (function () {
-        const nav = document.getElementById('mainNav');
-        const btn = document.getElementById('navToggle');
-        btn && btn.addEventListener('click', () => {
-            const open = nav.classList.toggle('open');
-            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-        const y = new Date().getFullYear();
-        document.getElementById('year').textContent = y;
-    })();
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBHTTbLJbKUbvIj7amzeCmsRMKT5UtaknE",
+        authDomain: "pandemic-health.firebaseapp.com",
+        projectId: "pandemic-health",
+        storageBucket: "pandemic-health.appspot.com",
+        messagingSenderId: "80746170325",
+        appId: "1:80746170325:web:2ec82c7c1711a38be85f5c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Listen for auth state changes
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // Fetch user data from Firestore
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                welcomeMessage.textContent = `Welcome, ${userData.name}!`;
+            }
+        } else {
+            // Redirect to login if not logged in
+            window.location.href = 'login.html';
+        }
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await signOut(auth);
+            window.location.href = 'login.html';
+        } catch (err) {
+            console.error('Error logging out:', err.message);
+        }
+    });
+
+    // Update year dynamically
+    const y = new Date().getFullYear();
+    document.getElementById('year').textContent = y;
     </script>
 </body>
 </html>
