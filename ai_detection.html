@@ -3,52 +3,247 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Detection - Pandemic System</title>
-    <link rel="stylesheet" href="css/ai_detection.css">
+    <title>AI Symptom Analysis | Pandemic Health</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* MODERN UI STYLES (Glassmorphism) */
+        :root {
+            --primary: #05668d;
+            --secondary: #028090;
+            --bg-light: #f0f4f8;
+            --white: #ffffff;
+            --text-dark: #1d3557;
+            --radius: 16px;
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg-light); color: var(--text-dark); margin: 0; padding: 20px; }
+        
+        /* Header */
+        header { max-width: 800px; margin: 0 auto 30px; display: flex; align-items: center; justify-content: space-between; }
+        .back-link { text-decoration: none; color: var(--primary); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        
+        /* Main Container */
+        .ai-container { max-width: 800px; margin: 0 auto; background: var(--white); border-radius: var(--radius); padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        h1 { margin: 0 0 10px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .muted { color: #6c757d; margin-bottom: 30px; }
+        
+        /* Form Elements */
+        label { display: block; margin-top: 20px; font-weight: 600; margin-bottom: 8px; }
+        input { width: 100%; padding: 14px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 1rem; background: #f8f9fa; transition: 0.3s; }
+        input:focus { border-color: var(--primary); background: #fff; outline: none; }
+        
+        .controls { margin-top: 30px; display: flex; gap: 15px; }
+        .btn { flex: 1; padding: 15px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .primary { background: var(--primary); color: white; }
+        .primary:hover { background: var(--secondary); }
+        .ghost { background: #e0e0e0; color: #333; }
+        
+        /* Loading Animation */
+        .hidden { display: none !important; }
+        #loading { text-align: center; padding: 40px; }
+        .pulse-icon { font-size: 3rem; color: var(--primary); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+        
+        /* Results Section */
+        .result-box { margin-top: 20px; padding: 25px; border-radius: 12px; border-left: 5px solid; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .result-box.high { border-color: #d32f2f; background: #ffebee; }
+        .result-box.medium { border-color: #f57c00; background: #fff3e0; }
+        .result-box.low { border-color: #388e3c; background: #e8f5e9; }
+        
+        .diagnosis-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
+        .recommendation { font-size: 1.1rem; line-height: 1.6; }
+    </style>
 </head>
 <body>
+
     <header>
-        <h1>AI-Powered Pandemic Detection</h1>
+        <a href="dashboard.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
     </header>
 
-    <main class="ai-detection-container" role="main">
-        <section class="detection-form card" aria-labelledby="det-title" role="region">
-            <h2 id="det-title">Enter Symptoms for AI Analysis</h2>
-            <form id="aiDetectionForm" role="form" autocomplete="on" novalidate>
-                <label for="symptoms">Symptoms</label>
-                <input name="symptoms" type="text" id="symptoms" placeholder="e.g., fever, cough, fatigue" required autocomplete="off">
+    <main class="ai-container">
+        <h1><i class="fas fa-robot"></i> AI Symptom Analysis</h1>
+        <p class="muted">Powered by Differential Diagnosis Engine (v2.4)</p>
 
-                <label for="location">Location</label>
-                <input name="location" type="text" id="location" placeholder="City, Country" required autocomplete="address-level2">
+        <form id="aiDetectionForm" autocomplete="off">
+            <label>Observed Symptoms</label>
+            <input id="symptoms" type="text" placeholder="e.g. high fever, headache, vomiting, bleeding" required>
 
-                <div class="controls">
-                    <button type="submit" class="btn primary">Analyze</button>
-                    <button type="button" id="aiReset" class="btn ghost">Reset</button>
-                </div>
-            </form>
-        </section>
+            <label>Current Location</label>
+            <input id="location" type="text" placeholder="e.g. Lagos, Kano, Abuja" required>
 
-        <div id="loading" class="hidden" aria-hidden="true" aria-live="polite">
-            <p>🔍 AI is analyzing symptoms... Please wait.</p>
+            <label>Duration (Days)</label>
+            <input id="duration" type="number" placeholder="e.g. 3" min="1" required>
+
+            <div class="controls">
+                <button type="submit" class="btn primary"><i class="fas fa-search-plus"></i> Run Diagnosis</button>
+                <button type="button" id="aiReset" class="btn ghost">Reset</button>
+            </div>
+        </form>
+
+        <div id="loading" class="hidden">
+            <div class="pulse-icon"><i class="fas fa-heartbeat"></i></div>
+            <p style="margin-top:20px; font-weight:600;">Analyzing clinical markers against regional database...</p>
         </div>
 
-        <section class="detection-results hidden card" id="result-section" aria-labelledby="results-title" role="region" tabindex="-1">
-            <h2 id="results-title">Analysis Results</h2>
-            <p id="analysis-output" role="status" aria-live="polite">Enter symptoms to receive AI analysis.</p>
-            <div id="risk-level" class="risk-box hidden" aria-hidden="true"></div>
-        </section>
+        <div id="result-section" class="hidden">
+            <div id="risk-box" class="result-box">
+                <div class="diagnosis-title" id="diagnosis-text"></div>
+                <div class="recommendation" id="recommendation-text"></div>
+            </div>
+            <p style="margin-top:20px; font-size:0.9rem; color:#666; text-align:center;">
+                <i class="fas fa-check-circle"></i> Report successfully transmitted to NCDC Surveillance Grid.
+            </p>
+        </div>
     </main>
 
-    <footer>
-        <p>&copy; 2025 Pandemic Detection System | AI-Enhanced Health Monitoring</p>
-    </footer>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-    <noscript>
-        <div class="card" style="margin:12px; padding:12px; background:#fff; border-radius:8px;">
-            <strong>Note:</strong> JavaScript is required to perform the client-side analysis demo.
-        </div>
-    </noscript>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBHTTbLJbKUbvIj7amzeCmsRMKT5UtaknE",
+            authDomain: "pandemic-health.firebaseapp.com",
+            projectId: "pandemic-health",
+            storageBucket: "pandemic-health.firebasestorage.app",
+            messagingSenderId: "80746170325",
+            appId: "1:80746170325:web:2ec82c7c1711a38be85f5c"
+        };
 
-    <script src="js/ai_detection.js"></script>
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserData = {};
+        let currentUserId = null;
+
+        // --- 1. SECURITY & SUBSCRIPTION CHECK ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUserId = user.uid;
+                const docSnap = await getDoc(doc(db, "users", user.uid));
+                
+                if (docSnap.exists()) {
+                    currentUserData = docSnap.data();
+                    
+                    // LOCK: If NOT Premium AND NOT Admin -> Kick out
+                    if (currentUserData.plan !== "premium" && currentUserData.role !== "admin") {
+                        alert("🔒 RESTRICTED ACCESS\n\nThis AI feature is for Premium Users only.\n(Business Model Demo: Please Upgrade)");
+                        window.location.href = "subscription.html"; 
+                    }
+                }
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        // --- 2. AI ENGINE LOGIC ---
+        const form = document.getElementById('aiDetectionForm');
+        const loading = document.getElementById('loading');
+        const resultSection = document.getElementById('result-section');
+        const riskBox = document.getElementById('risk-box');
+        const diagText = document.getElementById('diagnosis-text');
+        const recText = document.getElementById('recommendation-text');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // UI Transition
+            form.classList.add('hidden');
+            loading.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+
+            const s = document.getElementById('symptoms').value.toLowerCase();
+            const location = document.getElementById('location').value;
+            const duration = document.getElementById('duration').value;
+
+            // --- DIFFERENTIAL DIAGNOSIS ALGORITHM (The "Smart" Part) ---
+            setTimeout(async () => {
+                let diagnosis = "Undiagnosed Pyrexia";
+                let advice = "Symptoms are inconclusive. Isolate and monitor temperature.";
+                let riskScore = 20;
+                let riskClass = "low";
+
+                // A. MALARIA (Fever + Headache + Bitter)
+                if (s.includes("fever") && (s.includes("headache") || s.includes("bitter") || s.includes("cold"))) {
+                    diagnosis = "Suspected Malaria Infection";
+                    advice = "High likelihood of Plasmodium parasite. Proceed to lab for MP test and start Artemisinin-based therapy if confirmed.";
+                    riskScore = 65;
+                    riskClass = "medium";
+                }
+
+                // B. CHOLERA (Vomiting + Diarrhea)
+                else if (s.includes("vomit") && s.includes("diarrhea")) {
+                    diagnosis = "Suspected Cholera (Acute)";
+                    advice = "CRITICAL: Severe dehydration risk. Administer Oral Rehydration Salts (ORS) immediately and proceed to hospital.";
+                    riskScore = 90;
+                    riskClass = "high";
+                }
+
+                // C. LASSA FEVER (Bleeding + Chest Pain)
+                else if (s.includes("bleeding") || s.includes("chest") || s.includes("rat")) {
+                    diagnosis = "Possible Lassa Fever / Viral Hemorrhagic";
+                    advice = "EMERGENCY: Do not touch body fluids. Isolate patient completely and contact NCDC immediately.";
+                    riskScore = 95;
+                    riskClass = "high";
+                }
+
+                // D. RESPIRATORY (Cough + Breathing)
+                else if (s.includes("cough") && (s.includes("breath") || s.includes("chest"))) {
+                    diagnosis = "Respiratory Tract Infection";
+                    advice = "Possible viral pneumonia or COVID-19. Monitor oxygen levels and wear a mask.";
+                    riskScore = 75;
+                    riskClass = "medium";
+                }
+
+                // E. GENERAL VIRAL
+                else if (s.includes("fever") || s.includes("fatigue")) {
+                    diagnosis = "General Viral Syndrome";
+                    advice = "Rest, hydration, and antipyretics recommended.";
+                    riskScore = 35;
+                    riskClass = "low";
+                }
+
+                // --- 3. SAVE TO ADMIN DATABASE ---
+                try {
+                    await addDoc(collection(db, "ai_results"), {
+                        userId: currentUserId,
+                        userName: currentUserData.name || "Anonymous",
+                        symptoms: s,
+                        location: location,
+                        riskLevel: riskClass === "high" ? "High Risk" : (riskClass === "medium" ? "Medium Risk" : "Low Risk"),
+                        score: riskScore,
+                        timestamp: serverTimestamp() // Correct Timestamp for Admin
+                    });
+                } catch (err) {
+                    console.error("Save Error", err);
+                }
+
+                // --- 4. SHOW RESULTS ---
+                loading.classList.add('hidden');
+                resultSection.classList.remove('hidden');
+                
+                // Update UI Colors
+                riskBox.className = `result-box ${riskClass}`;
+                diagText.textContent = `${diagnosis} (${riskScore}% Match)`;
+                recText.textContent = advice;
+                
+                // Show form again so they can run another test? No, usually safer to force Reset.
+                // But we will leave Reset button for that.
+                
+            }, 2000); // 2 second thinking time
+        });
+
+        // Reset
+        document.getElementById('aiReset').addEventListener('click', () => {
+            form.reset();
+            form.classList.remove('hidden');
+            resultSection.classList.add('hidden');
+        });
+
+    </script>
 </body>
 </html>

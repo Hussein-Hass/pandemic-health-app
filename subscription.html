@@ -4,152 +4,125 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Subscription - Pandemic Detection System</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/subscription.css">
 </head>
 <body>
     <header class="site-header">
         <div class="header-inner">
-            <a class="brand" href="index.html" aria-label="Pandemic Detection Home">Pandemic Detection</a>
-            <nav id="mainNav" class="main-nav" role="navigation" aria-label="Main menu">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="ai_detection.html">AI Detection</a></li>
-                    <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="subscription.html" class="active">Subscription</a></li>
-                    <li><a href="admin.html">Admin</a></li>
-                </ul>
-            </nav>
+            <a class="brand" href="dashboard.html">← Back to Dashboard</a>
         </div>
     </header>
 
     <main class="subscription-container" role="main">
-        <header class="page-header">
-            <h1>Subscription plans</h1>
+        <header class="page-header" style="text-align:center; margin-bottom:30px;">
+            <h1>Upgrade Your Protection</h1>
+            <p class="lead">Unlock AI Analysis and Real-Time Alerts</p>
         </header>
 
-        <section class="plans card" aria-labelledby="plans-title">
-            <h2 id="plans-title" class="sr-only">Plans</h2>
+        <section class="plans card">
             <div class="plan-grid">
                 <article class="plan">
-                    <h3>Basic</h3>
-                    <p class="price"><strong>$9.99</strong><span>/month</span></p>
+                    <h3>Basic Citizen</h3>
+                    <p class="price"><strong>Free</strong></p>
                     <ul class="plan-features">
-                        <li>Limited AI Detection</li>
-                        <li>Monthly Health Reports</li>
-                        <li>Email support</li>
+                        <li>✅ Access to Dashboard</li>
+                        <li>✅ View General Alerts</li>
+                        <li>❌ No AI Symptom Analysis</li>
+                        <li>❌ No Risk Predictions</li>
                     </ul>
-                    <button class="btn select-plan" data-plan="basic" data-price="9.99" aria-label="Select Basic plan">Select Basic</button>
+                    <button class="btn ghost" disabled>Current Plan</button>
                 </article>
 
-                <article class="plan featured">
-                    <div class="badge">Popular</div>
-                    <h3>Premium</h3>
-                    <p class="price"><strong>$19.99</strong><span>/month</span></p>
+                <article class="plan featured" style="border: 2px solid #05668d;">
+                    <div class="badge" style="background:#05668d; color:white; padding:5px 10px; border-radius:15px; position:absolute; top:-10px; right:20px;">Recommended</div>
+                    <h3>Premium Shield</h3>
+                    <p class="price"><strong>₦5,000</strong><span>/year</span></p>
                     <ul class="plan-features">
-                        <li>Full AI Detection</li>
-                        <li>Real-time Alerts</li>
-                        <li>Priority consultations</li>
+                        <li>✅ <strong>Unlimited AI Analysis</strong></li>
+                        <li>✅ <strong>24/7 Monitoring</strong></li>
+                        <li>✅ Priority NCDC Alerts</li>
                     </ul>
-                    <button class="btn primary select-plan" data-plan="premium" data-price="19.99" aria-label="Select Premium plan">Select Premium</button>
+                    <button class="btn primary select-plan" id="upgradeBtn">⚡ Upgrade Now</button>
                 </article>
             </div>
         </section>
-
-        <section class="subscription-form card" aria-labelledby="subscribe-title">
-            <h2 id="subscribe-title">Subscribe</h2>
-            <form id="subscriptionForm" novalidate>
-                <label for="name">Full name</label>
-                <input id="name" name="name" type="text" placeholder="Your full name" required>
-
-                <label for="email">Email</label>
-                <input id="email" name="email" type="email" placeholder="you@example.com" required>
-
-                <label for="planSelect">Plan</label>
-                <select id="planSelect" name="plan" required>
-                    <option value="basic">Basic — $9.99/month</option>
-                    <option value="premium">Premium — $19.99/month</option>
-                </select>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn primary">Subscribe</button>
-                    <button type="button" id="resetBtn" class="btn ghost">Reset</button>
-                </div>
-
-                <p id="formMessage" class="muted small" aria-live="polite"></p>
-            </form>
-        </section>
     </main>
 
-    <footer class="site-footer" role="contentinfo">
-        <p>&copy; <span id="year"></span> Pandemic Detection System</p>
-    </footer>
-
-    <!-- Confirmation modal (mock payment flow) -->
-    <div id="confirmModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
-        <div class="modal-card">
-            <h3 id="confirmTitle">Confirm subscription</h3>
-            <p id="confirmText"></p>
-            <div class="modal-actions">
-                <button id="confirmBtn" class="btn primary">Confirm</button>
-                <button id="cancelBtn" class="btn ghost">Cancel</button>
+    <div id="confirmModal" class="modal hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); display:none; align-items:center; justify-content:center;">
+        <div class="modal-card" style="background:white; padding:30px; border-radius:12px; max-width:400px; text-align:center;">
+            <h3>Confirm Payment</h3>
+            <p>You are about to upgrade to the <strong>Premium Shield</strong> plan.</p>
+            <p style="font-size:0.9rem; color:#666; margin:15px 0;">(This is a demo. No real money will be deducted.)</p>
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <button id="processPayment" class="btn primary">💳 Pay ₦5,000</button>
+                <button id="cancelPayment" class="btn ghost">Cancel</button>
             </div>
         </div>
     </div>
 
-    <script>
-    (function(){
-        // small behaviors: year, form handling, mock confirmation
-        document.getElementById('year').textContent = new Date().getFullYear();
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-        const planButtons = document.querySelectorAll('.select-plan');
-        const planSelect = document.getElementById('planSelect');
-        planButtons.forEach(btn => btn.addEventListener('click', () => {
-            const p = btn.dataset.plan;
-            planSelect.value = p;
-            document.getElementById('formMessage').textContent = `Selected ${p} plan. Complete form to subscribe.`;
-            planSelect.focus();
-        }));
+        const firebaseConfig = {
+            apiKey: "AIzaSyBHTTbLJbKUbvIj7amzeCmsRMKT5UtaknE",
+            authDomain: "pandemic-health.firebaseapp.com",
+            projectId: "pandemic-health",
+            storageBucket: "pandemic-health.firebasestorage.app",
+            messagingSenderId: "80746170325",
+            appId: "1:80746170325:web:2ec82c7c1711a38be85f5c"
+        };
 
-        const form = document.getElementById('subscriptionForm');
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const upgradeBtn = document.getElementById('upgradeBtn');
         const modal = document.getElementById('confirmModal');
-        const confirmText = document.getElementById('confirmText');
-        const confirmBtn = document.getElementById('confirmBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const resetBtn = document.getElementById('resetBtn');
+        const payBtn = document.getElementById('processPayment');
+        const cancelBtn = document.getElementById('cancelPayment');
 
-        function openModal(text){
-            confirmText.textContent = text;
-            modal.classList.remove('hidden');
-            modal.setAttribute('aria-hidden','false');
-            confirmBtn.focus();
-        }
-        function closeModal(){
-            modal.classList.add('hidden');
-            modal.setAttribute('aria-hidden','true');
-        }
+        let currentUser = null;
 
-        form.addEventListener('submit', function(e){
-            e.preventDefault();
-            const name = form.name.value.trim();
-            const email = form.email.value.trim();
-            const plan = form.plan.value;
-            if(!name || !email){
-                document.getElementById('formMessage').textContent = 'Please fill in your name and a valid email.';
-                return;
+        onAuthStateChanged(auth, (user) => {
+            if (user) { currentUser = user; }
+            else { window.location.href = 'login.html'; }
+        });
+
+        // Show Modal
+        upgradeBtn.addEventListener('click', () => {
+            modal.style.display = 'flex';
+        });
+
+        // Hide Modal
+        cancelBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // PROCESS PAYMENT (Update Database)
+        payBtn.addEventListener('click', async () => {
+            if (!currentUser) return;
+            
+            payBtn.textContent = "Processing...";
+            
+            try {
+                // This is the Business Logic: Update plan to 'premium'
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, {
+                    plan: "premium",
+                    updatedAt: new Date().toISOString()
+                });
+                
+                alert("🎉 Payment Successful! You are now a Premium User.");
+                window.location.href = "ai_detection.html"; // Redirect to AI page
+            } catch (error) {
+                console.error("Error updating plan:", error);
+                alert("Transaction failed. Try again.");
+                payBtn.textContent = "💳 Pay ₦5,000";
             }
-            openModal(`Name: ${name}\nEmail: ${email}\nPlan: ${plan}\n\nThis is a demo confirmation (no real payment).`);
         });
-
-        confirmBtn.addEventListener('click', function(){
-            closeModal();
-            document.getElementById('formMessage').textContent = 'Subscription successful — welcome!';
-            form.reset();
-        });
-        cancelBtn.addEventListener('click', closeModal);
-        resetBtn.addEventListener('click', function(){ form.reset(); document.getElementById('formMessage').textContent=''; });
-    })();
     </script>
 </body>
 </html>

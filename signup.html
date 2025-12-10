@@ -63,13 +63,13 @@
     import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
     const firebaseConfig = {
-  apiKey: "AIzaSyBHTTbLJbKUbvIj7amzeCmsRMKT5UtaknE",
-  authDomain: "pandemic-health.firebaseapp.com",
-  projectId: "pandemic-health",
-  storageBucket: "pandemic-health.firebasestorage.app",
-  messagingSenderId: "80746170325",
-  appId: "1:80746170325:web:2ec82c7c1711a38be85f5c"
-};
+      apiKey: "AIzaSyBHTTbLJbKUbvIj7amzeCmsRMKT5UtaknE",
+      authDomain: "pandemic-health.firebaseapp.com",
+      projectId: "pandemic-health",
+      storageBucket: "pandemic-health.firebasestorage.app",
+      messagingSenderId: "80746170325",
+      appId: "1:80746170325:web:2ec82c7c1711a38be85f5c"
+    };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -106,11 +106,13 @@
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
+        // Save user data to Firestore including the 'role'
         await setDoc(doc(db, 'users', user.uid), {
           name,
           age: Number(age),
           gender,
           email,
+          role: 'user',  // <--- THIS IS THE FIX
           createdAt: new Date().toISOString()
         });
 

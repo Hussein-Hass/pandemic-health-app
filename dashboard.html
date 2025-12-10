@@ -3,140 +3,157 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard - Pandemic Detection</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Dashboard | Pandemic Health</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/dashboard.css">
     <style>
-        /* General Styles - header/footer neutralized (removed top blue) */
-        body { font-family: 'Poppins', sans-serif; margin:0; padding:0; background-color:#f4f4f9; color:#333; }
-
-        /* header: neutral, no blue */
-        header {
-            background: transparent;
-            color: #0b3954;
-            padding: 16px 0;
-        }
-
-        /* nav small adjustments kept neutral */
-        header nav ul { display:flex; justify-content:center; list-style:none; padding:0; margin:10px 0 0; }
-        header nav ul li { margin:0 15px; }
-        header nav ul li a { color: #0b3954; text-decoration:none; font-weight:600; padding:6px 8px; border-radius:8px; }
-        header nav ul li a:hover { background:#eef6fb; color:#05668d; }
-
-        .dashboard-container { padding:20px; }
-
-        /* keep table / cards styling (unchanged) */
-        table { width:100%; border-collapse:collapse; margin-top:20px; background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 4px 6px rgba(0,0,0,0.06); }
-        table th, table td { padding:12px 15px; text-align:left; border-bottom:1px solid #eee; }
-        table thead { background-color:linear-gradient(90deg,#05668d,#028090); color:#fff; }
-        table tbody tr:nth-child(even) { background:#fafbfd; }
-        table tbody tr:hover { background:#f1f3f5; cursor:pointer; }
-
-        /* footer neutral (no blue) */
-        footer { background: transparent; color:#6b7b86; text-align:center; padding:14px 0; margin-top:20px; }
-
-        @media (max-width: 768px) {
-            .stats { flex-direction:column; }
-            .stat-box { width:100%; }
-            table { font-size:0.9rem; }
-        }
+        /* Keep Chatbot Styles here for safety */
+        #chat-btn { position: fixed; bottom: 30px; right: 30px; background: #05668d; color: white; border: none; width: 60px; height: 60px; border-radius: 50%; font-size: 24px; cursor: pointer; box-shadow: 0 10px 25px rgba(5,102,141,0.3); z-index: 1000; transition: transform 0.2s; }
+        #chat-btn:hover { transform: scale(1.1); }
+        #chat-window { position: fixed; bottom: 100px; right: 30px; width: 350px; height: 500px; background: white; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); display: none; flex-direction: column; z-index: 1000; overflow: hidden; border: 1px solid #f0f0f0; }
+        .chat-header { background: #05668d; color: white; padding: 20px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { flex: 1; padding: 20px; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column; gap: 12px; }
+        .chat-footer { padding: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; background: white; }
+        .chat-input { flex: 1; padding: 12px; border: 1px solid #eee; border-radius: 25px; outline: none; background: #f8f9fa; }
+        .send-btn { background: #05668d; color: white; border: none; padding: 0 15px; border-radius: 50%; cursor: pointer; }
+        .msg { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 0.9rem; line-height: 1.5; }
+        .bot { align-self: flex-start; background: white; border: 1px solid #eee; color: #333; border-bottom-left-radius: 2px; }
+        .user { align-self: flex-end; background: #05668d; color: white; border-bottom-right-radius: 2px; }
     </style>
 </head>
 <body>
-    <header>
-        <button id="sidebarToggle" class="sidebar-toggle" aria-label="Toggle navigation" aria-expanded="true"><i class="fas fa-bars"></i></button>
 
-        <aside class="sidebar open" id="sidebar" aria-hidden="false">
-            <div class="brand">
-                <h1>Pandemic</h1>
-            </div>
-            <nav class="sidebar-nav" role="navigation" aria-label="Main">
-                <a href="index.html">Home</a>
-                <a href="dashboard.html" class="active">Dashboard</a>
-                <a href="ai_detection.html">AI Detection</a>
-                <a href="subscription.html">Subscription</a>
-                <a href="admin.html">Admin Panel</a>
-            </nav>
-        </aside>
-
-        <div class="topbar" aria-hidden="true">
-            <div class="topbar-inner"><span class="page-title">Dashboard</span></div>
+    <aside class="sidebar">
+        <div class="brand">
+            <h1>Pandemic</h1>
         </div>
-    </header>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="ai_detection.html"><i class="fas fa-microscope"></i> AI Diagnosis</a>
+            <a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+            <a href="subscription.html"><i class="fas fa-crown"></i> Premium</a>
+            <a href="#" id="logoutBtn" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
 
     <main class="dashboard-container">
-        <section class="overview-card">
-            <div class="overview-media">
-                <!-- decorative image only - upload removed -->
-                <img id="previewImage" src="images/dashboard_icon.png" alt="Dashboard overview" class="dashboard-img">
+        <header>
+            <div class="header-left">
+                <h2 class="page-title">Overview</h2>
+                <p style="color:var(--text-grey)">Welcome back to your health command center.</p>
             </div>
+            <div class="user-profile">
+                <div style="text-align: right;">
+                    <strong style="display:block;">User</strong>
+                    <span style="font-size:0.8rem; color:green;">● Online</span>
+                </div>
+                <div class="avatar"><i class="fas fa-user"></i></div>
+            </div>
+        </header>
 
-            <div class="overview-content">
-                <h2>System Overview</h2>
-                <p>Monitor AI detection reports and track outbreaks. Personalization upload removed for privacy — image here is decorative.</p>
-                <div class="stats-row">
-                    <div class="stat small">
-                        <div class="stat-value">1,245</div>
-                        <div class="stat-label">Total cases</div>
-                    </div>
-                    <div class="stat small">
-                        <div class="stat-value">432</div>
-                        <div class="stat-label">High-risk</div>
-                    </div>
-                    <div class="stat small">
-                        <div class="stat-value">789</div>
-                        <div class="stat-label">Recent scans</div>
-                    </div>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon blue-icon"><i class="fas fa-shield-virus"></i></div>
+                <div class="stat-info">
+                    <h3>Safe</h3>
+                    <p>Current Status</p>
                 </div>
             </div>
+            <div class="stat-card">
+                <div class="stat-icon green-icon"><i class="fas fa-user-md"></i></div>
+                <div class="stat-info">
+                    <h3>Active</h3>
+                    <p>AI Monitoring</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="stat-info">
+                    <h3>Low</h3>
+                    <p>Area Risk</p>
+                </div>
+            </div>
+        </div>
+
+        <section class="overview-card">
+            <div class="section-header">
+                <h3>📢 Official NCDC Alerts</h3>
+                <span style="font-size:0.8rem; color:grey;">Live Feed</span>
+            </div>
+            <div id="alertContainer">
+                <p style="color:#666; font-style:italic;">No active alerts in your region.</p>
+            </div>
         </section>
 
-        <section class="user-activity card">
-            <h3>Recent User Activity</h3>
-            <table>
-                <thead>
-                    <tr><th>User</th><th>Scan Date</th><th>Result</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>Musa Aliyu</td><td>March 9, 2025</td><td class="result negative">Negative</td></tr>
-                    <tr><td>Janet Peace</td><td>March 10, 2025</td><td class="result positive">Positive</td></tr>
-                    <tr><td>Michael Isah</td><td>March 10, 2025</td><td class="result negative">Negative</td></tr>
-                </tbody>
-            </table>
-        </section>
     </main>
 
-    <footer>
-        <p class="copyright">&copy; <script>document.write(new Date().getFullYear());</script> Pandemic Detection System</p>
-    </footer>
+    <button id="chat-btn"><i class="fas fa-comment-medical"></i></button>
+    <div id="chat-window">
+        <div class="chat-header"><span>🤖 Health Assistant</span><span id="close-chat" style="cursor:pointer;">&times;</span></div>
+        <div class="chat-body" id="chat-body"><div class="msg bot">Hello! Ask me about symptoms, risk, or prevention.</div></div>
+        <div class="chat-footer"><input type="text" id="chat-input" class="chat-input" placeholder="Type..."><button id="send-btn" class="send-btn"><i class="fas fa-paper-plane"></i></button></div>
+    </div>
 
-    <script>
-    // sidebar: robust open/close + responsive default
-    (function(){
-        const sidebar = document.getElementById('sidebar');
-        const toggle = document.getElementById('sidebarToggle');
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-        function setSidebar(open) {
-            if (!sidebar || !toggle) return;
-            if (open) sidebar.classList.add('open'); else sidebar.classList.remove('open');
-            toggle.setAttribute('aria-expanded', !!open);
-            sidebar.setAttribute('aria-hidden', !open);
+        const firebaseConfig = { apiKey: "AIzaSyBHTTbLJbKUbvIj7amzeCmsRMKT5UtaknE", authDomain: "pandemic-health.firebaseapp.com", projectId: "pandemic-health", storageBucket: "pandemic-health.firebasestorage.app", messagingSenderId: "80746170325", appId: "1:80746170325:web:2ec82c7c1711a38be85f5c" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ALERTS
+        const alertContainer = document.getElementById('alertContainer');
+        const q = query(collection(db, "notifications"), orderBy("timestamp", "desc"), limit(3));
+        onSnapshot(q, (snapshot) => {
+            if(!snapshot.empty) {
+                alertContainer.innerHTML = ""; 
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString() : "Just now";
+                    alertContainer.innerHTML += `<div class="alert-box"><span class="alert-title">⚠️ ${data.title}</span><span class="alert-body">${data.message}</span><span class="alert-time">${time}</span></div>`;
+                });
+            }
+        });
+
+        // AUTH
+        document.getElementById('logoutBtn').addEventListener('click', () => { signOut(auth).then(() => window.location.href = 'login.html'); });
+        onAuthStateChanged(auth, (user) => { if (!user) window.location.href = 'login.html'; });
+
+        // CHATBOT LOGIC
+        const chatBtn = document.getElementById('chat-btn');
+        const chatWindow = document.getElementById('chat-window');
+        const closeChat = document.getElementById('close-chat');
+        const chatBody = document.getElementById('chat-body');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const knowledgeBase = {
+            "symptoms": "Fever, cough, fatigue, loss of smell.",
+            "malaria": "Fever + Headache + Bitter taste. Please take a test.",
+            "cholera": "Vomiting + Diarrhea. Stay hydrated and seek help.",
+            "prevention": "Wash hands, mask up, vaccinate.",
+            "risk": "Check AI Diagnosis in the menu.",
+            "hello": "Hi! How can I help?",
+            "default": "I'm not sure. Try asking about 'symptoms', 'malaria', or 'risk'."
+        };
+        function addMessage(text, sender) { const div = document.createElement('div'); div.classList.add('msg', sender); div.textContent = text; chatBody.appendChild(div); chatBody.scrollTop = chatBody.scrollHeight; }
+        function handleSend() {
+            const val = chatInput.value.trim();
+            if (!val) return;
+            addMessage(val, 'user');
+            chatInput.value = '';
+            setTimeout(() => {
+                let reply = knowledgeBase["default"];
+                for (let key in knowledgeBase) { if (val.toLowerCase().includes(key)) reply = knowledgeBase[key]; }
+                addMessage(reply, 'bot');
+            }, 600);
         }
-
-        // default: open on wide screens, collapsed on small
-        function initResponsive() {
-            const wide = window.matchMedia('(min-width: 881px)').matches;
-            setSidebar(wide);
-        }
-
-        if (toggle && sidebar) {
-            toggle.addEventListener('click', () => setSidebar(!sidebar.classList.contains('open')));
-            window.addEventListener('resize', initResponsive);
-            initResponsive();
-        }
-    })();
+        chatBtn.addEventListener('click', () => chatWindow.style.display = 'flex');
+        closeChat.addEventListener('click', () => chatWindow.style.display = 'none');
+        sendBtn.addEventListener('click', handleSend);
+        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleSend(); });
     </script>
 </body>
 </html>
